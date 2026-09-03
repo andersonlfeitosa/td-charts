@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tesouro Direto - Histórico</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+    }
+
+    .filtros {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .campo-filtro {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    select {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .grafico-container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Histórico de Preços do Tesouro Direto</h1>
+
+  <!-- Controles para filtrar o gráfico por Título e Vencimento -->
+  <div class="filtros">
+    <div class="campo-filtro">
+      <label for="selectTitulo">Tipo de Título:</label>
+      <select id="selectTitulo"></select>
+    </div>
+
+    <div class="campo-filtro">
+      <label for="selectVencimento">Data de Vencimento:</label>
+      <select id="selectVencimento"></select>
+    </div>
+  </div>
+
+  <div class="grafico-container">
+    <canvas id="graficoTesouro"></canvas>
+  </div>
+
+  <script>
+    let todosOsDados = [];
+    let meuGrafico = null;
+
+    // Converte valor no formato brasileiro ("19729,11") para float (19729.11)
+    function parseValorBR(valorStr) {
+      if (!valorStr) return null;
+      const valorFormatado = valorStr.replace(/\./g, '').replace(',', '.');
+      return parseFloat(valorFormatado);
+    }
+
+    // Converte string "DD/MM/AAAA" em um objeto Date do JS para ordenação correta
+    function parseDataBR(dataStr) {
+      if (!dataStr) return new Date(0);
+      const partes = dataStr.split('/');
+      return new Date(partes[2], partes[1] - 1, partes[0]);
+    }
+
+    async function inicializar() {
+      // 1. Busca o arquivo CSV (Ajuste o nome do arquivo se necessário)
+      const resposta = await fetch('./data.csv');
+      const textoCsv = await resposta.text();
+
+      // 2. Parse do CSV via PapaParse
+      Papa.parse(textoCsv, {
+        header: true,
+        delimiter: ";",
+        skipEmptyLines: true,
+        complete: function (resultado) {
+          todosOsDados = resultado.data;
+
+          // 3. Popula o primeiro filtro (Tipos de Título únicos)
+          const tiposTitulos = [...new Set(todosOsDados.map(item => item['Tipo Titulo']))].filter(Boolean);
+          const selectTitulo = document.getElementById('selectTitulo');
+
+          tiposTitulos.forEach(titulo => {
+            const option = document.createElement('option');
+            option.value = titulo;
+            option.textContent = titulo;
+            selectTitulo.appendChild(option);
+          });
+
+          // 4. Configura listeners para alterar o gráfico conforme a seleção
+          selectTitulo.addEventListener('change', atualizarOpcoesVencimento);
+          document.getElementById('selectVencimento').addEventListener('change', atualizarGrafico);
+
+          // Inicializa os filtros com a primeira opção carregada
+          atualizarOpcoesVencimento();
+        }
+      });
+    }
+
+    // Atualiza o filtro de vencimentos conforme o Título selecionado
+    function atualizarOpcoesVencimento() {
+      const tituloSelecionado = document.getElementById('selectTitulo').value;
+      const selectVencimento = document.getElementById('selectVencimento');
+      selectVencimento.innerHTML = '';
+
+      // Filtra vencimentos únicos para o título escolhido
+      const vencimentos = [...new Set(
+        todosOsDados
+          .filter(item => item['Tipo Titulo'] === tituloSelecionado)
+          .map(item => item['Data Vencimento'])
+      )].filter(Boolean);
+
+      vencimentos.forEach(venc => {
+        const option = document.createElement('option');
+        option.value = venc;
+        option.textContent = venc;
+        selectVencimento.appendChild(option);
+      });
+
+      atualizarGrafico();
+    }
+
+    // Filtra, ordena e desenha o gráfico com o Título e Vencimento específicos
+    function atualizarGrafico() {
+      const tituloSelecionado = document.getElementById('selectTitulo').value;
+      const vencimentoSelecionado = document.getElementById('selectVencimento').value;
+
+      // Filtra as linhas correspondentes
+      let dadosFiltrados = todosOsDados.filter(item =>
+        item['Tipo Titulo'] === tituloSelecionado &&
+        item['Data Vencimento'] === vencimentoSelecionado
+      );
+
+      // Ordena cronologicamente por 'Data Base' (da mais antiga para a mais recente)
+      dadosFiltrados.sort((a, b) => parseDataBR(a['Data Base']) - parseDataBR(b['Data Base']));
+
+      // Extrai os eixos do gráfico
+      const datas = dadosFiltrados.map(item => item['Data Base']);
+      const puCompra = dadosFiltrados.map(item => parseValorBR(item['PU Compra Manha']));
+      const puVenda = dadosFiltrados.map(item => parseValorBR(item['PU Venda Manha']));
+
+      // Destrói o gráfico anterior caso já exista para recriar
+      if (meuGrafico) {
+        meuGrafico.destroy();
+      }
+
+      // Renderiza o novo gráfico
+      const ctx = document.getElementById('graficoTesouro').getContext('2d');
+      meuGrafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: datas,
+          datasets: [
+            {
+              label: 'PU Compra (R$)',
+              data: puCompra,
+              borderColor: '#1f77b4', // Azul
+              backgroundColor: '#1f77b4',
+              borderWidth: 2,
+              fill: false,
+              tension: 0.1
+            },
+            {
+              label: 'PU Venda (R$)',
+              data: puVenda,
+              borderColor: '#d62728', // Vermelho
+              backgroundColor: '#d62728',
+              borderWidth: 2,
+              fill: false,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: `${tituloSelecionado} - Vencimento ${vencimentoSelecionado}`
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Data Base'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Preço Unitário (R$)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    inicializar();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+name: Executar Tarefa Diária
+
+on:
+  # Agendamento via CRON
+  schedule:
+    # Sintaxe: Minuto Hora Dia-do-Mês Mês Dia-da-Semana
+    - cron: '0 0 * * *'
+
+  # (Opcional) Permite rodar o workflow manualmente no painel do GitHub
+  workflow_dispatch:
+
+jobs:
+  executar-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Executar um comando ou script
+        run: |
+          echo "Executando tarefa diária no GitHub Actions!"
+          chmod 755 get-td-data.sh
+          ./get-td-data.sh
