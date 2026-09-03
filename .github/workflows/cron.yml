@@ -1,13 +1,16 @@
 name: Executar Tarefa Diária
 
 on:
-  # Agendamento via CRON
   schedule:
-    # Sintaxe: Minuto Hora Dia-do-Mês Mês Dia-da-Semana
-    - cron: '0 0 * * *'
+    # Sintaxe: Minuto Hora Dia-do-Mês Mês Dia-da-Semana (UTC)
+    - cron: '0 13 * * *'
 
-  # (Opcional) Permite rodar o workflow manualmente no painel do GitHub
+  # Permite rodar o workflow manualmente no painel do GitHub
   workflow_dispatch:
+
+# Permissões necessárias para que o bot do GitHub Actions possa salvar (push) no repositório
+permissions:
+  contents: write
 
 jobs:
   executar-script:
@@ -16,8 +19,21 @@ jobs:
       - name: Baixar o código do repositório
         uses: actions/checkout@v4
 
-      - name: Executar um comando ou script
+      - name: Baixar arquivo CSV do Tesouro Direto
         run: |
-          echo "Executando tarefa diária no GitHub Actions!"
-          chmod 755 get-td-data.sh
-          ./get-td-data.sh
+          echo "Iniciando o download dos dados do Tesouro Direto..."
+          URL="https://www.tesourotransparente.gov.br/ckan/dataset/df56aa42-484a-4a59-8184-7676580c81e3/resource/796d2059-14e9-44e3-80c9-2d9e30b405c1/download/precotaxatesourodireto.csv"
+          curl -L -f "$URL" -o data.csv
+          echo "Download concluído com sucesso!"
+
+      - name: Commitar e salvar arquivo no repositório
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data.csv
+
+          # Evita erro caso os dados do dia ainda não tenham sido atualizados no site do Tesouro
+          git commit -m "Automático: Atualizando histórico do Tesouro Direto" || echo "Sem alterações para commitar."
+
+          git push
