@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
 CSV_FILE="data.csv"
+JSON_DIR="json"
 
 if [ ! -f "$CSV_FILE" ]; then
     echo "Erro: Arquivo $CSV_FILE não encontrado!" >&2
     exit 1
 fi
 
+# Cria a pasta 'json' caso não exista
+mkdir -p "$JSON_DIR"
+
 echo "Processando $CSV_FILE..."
 
-awk -F';' '
+awk -F';' -v OUTPUT_DIR="$JSON_DIR" '
 # Função para converter DD/MM/AAAA em AAAAMMXX para comparação numérica
 function data_para_numero(d) {
     split(d, a, "/")
@@ -71,25 +75,26 @@ END {
             prefixo = "OUTROS"
         }
 
-        # Constrói os nomes padrão e do arquivo
+        # Constrói o nome do arquivo e o caminho final
         nome_padrao = prefixo "_" ano_venc
-        nome_arquivo = json/tolower(nome_padrao) ".json"
+        nome_arquivo = tolower(nome_padrao) ".json"
+        caminho_arquivo = OUTPUT_DIR "/" nome_arquivo
 
         # Escreve o arquivo JSON formatado
-        printf "{\n" > nome_arquivo
-        printf "  \"nome_original\": \"%s\",\n", tipo_titulo > nome_arquivo
-        printf "  \"nome_padrao\": \"%s\",\n", nome_padrao > nome_arquivo
-        printf "  \"vencimento\": \"%s\",\n", vencimento > nome_arquivo
-        printf "  \"data_base\": \"%s\",\n", data_base > nome_arquivo
-        printf "  \"taxa_compra_manha\": \"%s\",\n", taxa_compra > nome_arquivo
-        printf "  \"taxa_venda_manha\": \"%s\",\n", taxa_venda > nome_arquivo
-        printf "  \"pu_compra_manha\": \"%s\",\n", pu_compra > nome_arquivo
-        printf "  \"pu_venda_manha\": \"%s\",\n", pu_venda > nome_arquivo
-        printf "  \"pu_base_manha\": \"%s\"\n", pu_base > nome_arquivo
-        printf "}\n" > nome_arquivo
+        printf "{\n" > caminho_arquivo
+        printf "  \"nome_original\": \"%s\",\n", tipo_titulo > caminho_arquivo
+        printf "  \"nome_padrao\": \"%s\",\n", nome_padrao > caminho_arquivo
+        printf "  \"vencimento\": \"%s\",\n", vencimento > caminho_arquivo
+        printf "  \"data_base\": \"%s\",\n", data_base > caminho_arquivo
+        printf "  \"taxa_compra_manha\": \"%s\",\n", taxa_compra > caminho_arquivo
+        printf "  \"taxa_venda_manha\": \"%s\",\n", taxa_venda > caminho_arquivo
+        printf "  \"pu_compra_manha\": \"%s\",\n", pu_compra > caminho_arquivo
+        printf "  \"pu_venda_manha\": \"%s\",\n", pu_venda > caminho_arquivo
+        printf "  \"pu_base_manha\": \"%s\"\n", pu_base > caminho_arquivo
+        printf "}\n" > caminho_arquivo
 
-        close(nome_arquivo)
-        print "Gerado: " nome_arquivo
+        close(caminho_arquivo)
+        print "Gerado: " caminho_arquivo
     }
 }
 ' "$CSV_FILE"
