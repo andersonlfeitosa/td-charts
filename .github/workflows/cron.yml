@@ -33,7 +33,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add data.csv
+          git add data.csv *json
 
           # Evita erro caso os dados do dia ainda não tenham sido atualizados no site do Tesouro
           git commit -m "Automático: Atualizando histórico do Tesouro Direto" || echo "Sem alterações para commitar."
