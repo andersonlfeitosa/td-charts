@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Prefixado",
   "nome_padrao": "PREFIXADO_2029",
   "vencimento": "01/01/2029",
-  "data_base": "02/09/2026",
-  "taxa_compra_manha": "14,05",
-  "taxa_venda_manha": "14,17",
-  "pu_compra_manha": "738,90",
-  "pu_venda_manha": "736,73",
-  "pu_base_manha": "736,73"
+  "data_base": "03/09/2026",
+  "taxa_compra_manha": "13,93",
+  "taxa_venda_manha": "14,05",
+  "pu_compra_manha": "741,08",
+  "pu_venda_manha": "738,90",
+  "pu_base_manha": "738,90"
 }
