@@ -73,7 +73,7 @@ END {
 
         # Constrói os nomes padrão e do arquivo
         nome_padrao = prefixo "_" ano_venc
-        nome_arquivo = tolower(nome_padrao) ".json"
+        nome_arquivo = json/tolower(nome_padrao) ".json"
 
         # Escreve o arquivo JSON formatado
         printf "{\n" > nome_arquivo
