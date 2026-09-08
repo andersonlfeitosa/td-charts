@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesouro Direto - Visão Geral (Preços e Taxas)</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+    }
+
+    header {
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    p {
+      color: #666;
+      margin-top: 0;
+    }
+
+    /* Grid responsivo para os cards dos minigráficos */
+    .grid-graficos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    .card-grafico {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-grafico canvas {
+      max-height: 240px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Visão Geral do Tesouro Direto</h1>
+    <p>Histórico de Preços Unitários (PU em R$) e Taxas (%) para todos os títulos disponíveis no CSV.</p>
+  </header>
+
+  <!-- Container onde todos os minigráficos serão renderizados dinamicamente -->
+  <div id="gridGraficos" class="grid-graficos"></div>
+
+  <script>
+    // Converte valor no formato brasileiro ("19729,11") para float (19729.11)
+    function parseValorBR(valorStr) {
+      if (!valorStr) return null;
+      const valorFormatado = valorStr.replace(/\./g, '').replace(',', '.');
+      return parseFloat(valorFormatado);
+    }
+
+    // Converte string "DD/MM/AAAA" em objeto Date
+    function parseDataBR(dataStr) {
+      if (!dataStr) return new Date(0);
+      const partes = dataStr.split('/');
+      return new Date(partes[2], partes[1] - 1, partes[0]);
+    }
+
+    async function carregarETodosGraficos() {
+      const resposta = await fetch('./data.csv');
+      const textoCsv = await resposta.text();
+
+      Papa.parse(textoCsv, {
+        header: true,
+        delimiter: ";",
+        skipEmptyLines: true,
+        complete: function (resultado) {
+          const todosOsDados = resultado.data;
+
+          // 1. Mapeia combinações únicas de [Tipo Titulo] e [Data Vencimento]
+          const combinacoesUnicas = [];
+          const mapaChaves = new Set();
+
+          todosOsDados.forEach(item => {
+            const titulo = item['Tipo Titulo'];
+            const vencimento = item['Data Vencimento'];
+
+            if (titulo && vencimento) {
+              const chave = `${titulo}|${vencimento}`;
+              if (!mapaChaves.has(chave)) {
+                mapaChaves.add(chave);
+                combinacoesUnicas.push({ titulo, vencimento });
+              }
+            }
+          });
+
+          // Ordena alfabeticamente pelo nome do título e depois pelo vencimento
+          combinacoesUnicas.sort((a, b) =>
+            a.titulo.localeCompare(b.titulo) || a.vencimento.localeCompare(b.vencimento)
+          );
+
+          const containerGrid = document.getElementById('gridGraficos');
+
+          // 2. Para cada combinação única, cria um card com <canvas> e plota o gráfico
+          combinacoesUnicas.forEach((comb, index) => {
+            // Filtra e ordena os dados desta combinação específica
+            let dadosFiltrados = todosOsDados.filter(item =>
+              item['Tipo Titulo'] === comb.titulo &&
+              item['Data Vencimento'] === comb.vencimento
+            );
+
+            dadosFiltrados.sort((a, b) => parseDataBR(a['Data Base']) - parseDataBR(b['Data Base']));
+
+            const datas = dadosFiltrados.map(item => item['Data Base']);
+            const puCompra = dadosFiltrados.map(item => parseValorBR(item['PU Compra Manha']));
+            const puVenda = dadosFiltrados.map(item => parseValorBR(item['PU Venda Manha']));
+            const taxaCompra = dadosFiltrados.map(item => parseValorBR(item['Taxa Compra Manha']));
+            const taxaVenda = dadosFiltrados.map(item => parseValorBR(item['Taxa Venda Manha']));
+
+            // Cria os elementos do Card no DOM
+            const card = document.createElement('div');
+            card.className = 'card-grafico';
+
+            const canvas = document.createElement('canvas');
+            const canvasId = `grafico_${index}`;
+            canvas.id = canvasId;
+
+            card.appendChild(canvas);
+            containerGrid.appendChild(card);
+
+            // Renderiza o Chart.js com dois eixos Y (Esquerda = PU R$, Direita = Taxa %)
+            new Chart(canvas.getContext('2d'), {
+              type: 'line',
+              data: {
+                labels: datas,
+                datasets: [
+                  {
+                    label: 'PU Compra (R$)',
+                    data: puCompra,
+                    borderColor: '#1f77b4', // Azul
+                    backgroundColor: '#1f77b4',
+                    borderWidth: 1.5,
+                    pointRadius: 1,
+                    yAxisID: 'y', // Eixo Y principal (Preço)
+                    fill: false,
+                    tension: 0.1
+                  },
+                  {
+                    label: 'PU Venda (R$)',
+                    data: puVenda,
+                    borderColor: '#d62728', // Vermelho
+                    backgroundColor: '#d62728',
+                    borderWidth: 1.5,
+                    pointRadius: 1,
+                    yAxisID: 'y', // Eixo Y principal (Preço)
+                    fill: false,
+                    tension: 0.1
+                  },
+                  {
+                    label: 'Taxa Compra (%)',
+                    data: taxaCompra,
+                    borderColor: '#2ca02c', // Verde
+                    backgroundColor: '#2ca02c',
+                    borderWidth: 1.5,
+                    borderDash: [4, 4], // Linha tracejada para diferenciar do preço
+                    pointRadius: 1,
+                    yAxisID: 'y1', // Eixo Y secundário (Taxa)
+                    fill: false,
+                    tension: 0.1
+                  },
+                  {
+                    label: 'Taxa Venda (%)',
+                    data: taxaVenda,
+                    borderColor: '#ff7f0e', // Laranja
+                    backgroundColor: '#ff7f0e',
+                    borderWidth: 1.5,
+                    borderDash: [4, 4], // Linha tracejada
+                    pointRadius: 1,
+                    yAxisID: 'y1', // Eixo Y secundário (Taxa)
+                    fill: false,
+                    tension: 0.1
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                  mode: 'index',
+                  intersect: false,
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `${comb.titulo} (${comb.vencimento})`,
+                    font: {
+                      size: 13
+                    }
+                  },
+                  legend: {
+                    labels: {
+                      boxWidth: 10,
+                      font: {
+                        size: 10
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  x: {
+                    ticks: {
+                      font: { size: 9 },
+                      maxRotation: 45
+                    }
+                  },
+                  y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                      display: true,
+                      text: 'PU (R$)',
+                      font: { size: 9 }
+                    },
+                    ticks: {
+                      font: { size: 9 }
+                    }
+                  },
+                  y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                      display: true,
+                      text: 'Taxa (%)',
+                      font: { size: 9 }
+                    },
+                    ticks: {
+                      font: { size: 9 }
+                    },
+                    grid: {
+                      drawOnChartArea: false // Evita poluição visual das linhas de grade do 2º eixo
+                    }
+                  }
+                }
+              }
+            });
+          });
+        }
+      });
+    }
+
+    carregarETodosGraficos();
+  </script>
+</body>
+
+</html>
