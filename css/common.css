@@ -150,6 +150,11 @@ body.pagina-index {
   width: 100%;
   height: 100%;
   min-height: 0;
+  touch-action: none; /* Impede que o Safari intercepte o gesto de pinça na página inteira */
+}
+
+.wrapper-canvas canvas {
+  touch-action: none;
 }
 
 .dica-zoom {
@@ -191,4 +196,35 @@ body.pagina-dashboard h1 {
 
 .card-grafico canvas {
   max-height: 240px;
+}
+
+/* Ajustes Responsivos e Mobile (iOS / iPhone) */
+@media (max-width: 768px) {
+  body.pagina-index {
+    padding: 10px;
+    height: 100dvh; /* Garante altura exata com a barra de ferramentas do Safari */
+  }
+
+  .nav-header {
+    margin-bottom: 8px;
+  }
+
+  .nav-header h1 {
+    font-size: 1.15rem;
+  }
+
+  .filtros {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  /* Previne zoom automático indesejado no iOS Safari ao focar em inputs/selects */
+  select,
+  button {
+    font-size: 16px;
+  }
+
+  .card-grafico canvas {
+    max-height: 200px;
+  }
 }

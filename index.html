@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tesouro Direto - Histórico</title>
 
   <!-- Estilos compartilhados -->
@@ -12,6 +12,8 @@
   <!-- Carregamento de bibliotecas externas por CDN -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Biblioteca de suporte a gestos touch (necessária para o pinch zoom no mobile) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
   <!-- Plugin oficial de Zoom do Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 
@@ -50,7 +52,7 @@
     <div class="wrapper-canvas">
       <canvas id="graficoTesouro"></canvas>
     </div>
-    <div class="dica-zoom">💡 <b>Dica:</b> Clique e arraste o mouse sobre o gráfico para fazer zoom em um período específico. Use a roda do mouse (scroll) para aproximar ou afastar.</div>
+    <div class="dica-zoom">💡 <b>Dica:</b> No computador, arraste ou use o scroll. No celular ou tablet, faça o gesto de pinça (pinch) sobre o gráfico para aproximar/afastar.</div>
   </div>
 </body>
 

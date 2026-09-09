@@ -107,6 +107,9 @@ function atualizarGrafico() {
             wheel: {
               enabled: true
             },
+            pinch: {
+              enabled: true
+            },
             drag: {
               enabled: true,
               backgroundColor: 'rgba(31, 119, 180, 0.2)'
