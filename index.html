@@ -34,19 +34,45 @@
     </nav>
   </div>
 
-  <!-- Controles para filtrar o gráfico por Título e Vencimento -->
+  <!-- Controles de filtro e área de detalhes do título selecionado -->
   <div class="filtros">
-    <div class="campo-filtro">
-      <label for="selectTitulo">Tipo de Título:</label>
-      <select id="selectTitulo"></select>
+    <div class="filtros-controles">
+      <div class="campo-filtro">
+        <label for="selectTitulo">Tipo de Título:</label>
+        <select id="selectTitulo"></select>
+      </div>
+
+      <div class="campo-filtro">
+        <label for="selectVencimento">Data de Vencimento:</label>
+        <select id="selectVencimento"></select>
+      </div>
+
+      <button id="btnResetZoom">Resetar Zoom</button>
     </div>
 
-    <div class="campo-filtro">
-      <label for="selectVencimento">Data de Vencimento:</label>
-      <select id="selectVencimento"></select>
+    <!-- Área de detalhes do título selecionado (Últimos valores e atualização) -->
+    <div class="detalhes-titulo" id="detalhesTitulo">
+      <div class="card-detalhe detalhe-data">
+        <span class="label-detalhe">Atualizado em</span>
+        <span class="valor-detalhe" id="detalheDataBase">-</span>
+      </div>
+      <div class="card-detalhe detalhe-pu-compra">
+        <span class="label-detalhe">Últ. PU Compra</span>
+        <span class="valor-detalhe" id="detalhePuCompra">-</span>
+      </div>
+      <div class="card-detalhe detalhe-pu-venda">
+        <span class="label-detalhe">Últ. PU Venda</span>
+        <span class="valor-detalhe" id="detalhePuVenda">-</span>
+      </div>
+      <div class="card-detalhe detalhe-taxa-compra">
+        <span class="label-detalhe">Últ. Taxa Compra</span>
+        <span class="valor-detalhe" id="detalheTaxaCompra">-</span>
+      </div>
+      <div class="card-detalhe detalhe-taxa-venda">
+        <span class="label-detalhe">Últ. Taxa Venda</span>
+        <span class="valor-detalhe" id="detalheTaxaVenda">-</span>
+      </div>
     </div>
-
-    <button id="btnResetZoom">Resetar Zoom</button>
   </div>
 
   <div class="grafico-container">

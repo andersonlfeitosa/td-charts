@@ -97,10 +97,11 @@ button:hover {
   background-color: var(--primary-hover);
 }
 
-/* Painel de Filtros (index.html) */
+/* Painel de Filtros e Detalhes (index.html) */
 .filtros {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
   gap: 15px;
   margin-bottom: 12px;
   background: var(--card-bg);
@@ -108,6 +109,13 @@ button:hover {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.filtros-controles {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
@@ -121,6 +129,82 @@ button:hover {
   font-size: 13px;
   font-weight: bold;
   color: var(--text-subtle);
+}
+
+/* Área de Detalhes do Título em Destaque */
+.detalhes-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-detalhe {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 10px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  min-width: 95px;
+  transition: all 0.2s ease-in-out;
+}
+
+.card-detalhe:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card-detalhe .label-detalhe {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+
+.card-detalhe .valor-detalhe {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+/* Cores alinhadas com os eixos e séries do gráfico */
+.card-detalhe.detalhe-data {
+  border-left: 3px solid #6c757d;
+}
+.card-detalhe.detalhe-data .valor-detalhe {
+  color: #495057;
+}
+
+.card-detalhe.detalhe-pu-compra {
+  border-left: 3px solid #1f77b4;
+}
+.card-detalhe.detalhe-pu-compra .valor-detalhe {
+  color: #1f77b4;
+}
+
+.card-detalhe.detalhe-pu-venda {
+  border-left: 3px solid #d62728;
+}
+.card-detalhe.detalhe-pu-venda .valor-detalhe {
+  color: #d62728;
+}
+
+.card-detalhe.detalhe-taxa-compra {
+  border-left: 3px solid #2ca02c;
+}
+.card-detalhe.detalhe-taxa-compra .valor-detalhe {
+  color: #2ca02c;
+}
+
+.card-detalhe.detalhe-taxa-venda {
+  border-left: 3px solid #ff7f0e;
+}
+.card-detalhe.detalhe-taxa-venda .valor-detalhe {
+  color: #ff7f0e;
 }
 
 /* Layout Fixo da Página index.html */
@@ -199,10 +283,29 @@ body.pagina-dashboard h1 {
 }
 
 /* Ajustes Responsivos e Mobile (iOS / iPhone) */
+@media (max-width: 1024px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detalhes-titulo {
+    width: 100%;
+    margin-top: 4px;
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 768px) {
   body.pagina-index {
     padding: 10px;
-    height: 100dvh; /* Garante altura exata com a barra de ferramentas do Safari */
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .grafico-container {
+    min-height: 380px;
   }
 
   .nav-header {
@@ -214,8 +317,29 @@ body.pagina-dashboard h1 {
   }
 
   .filtros {
-    gap: 8px;
+    gap: 10px;
     padding: 8px 12px;
+  }
+
+  .filtros-controles {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .detalhes-titulo {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .card-detalhe.detalhe-data {
+    grid-column: span 2;
+  }
+
+  .card-detalhe {
+    min-width: 0;
+    padding: 4px 8px;
   }
 
   /* Previne zoom automático indesejado no iOS Safari ao focar em inputs/selects */

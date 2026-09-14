@@ -63,11 +63,17 @@ function atualizarGrafico() {
   const tituloSelecionado = document.getElementById('selectTitulo').value;
   const vencimentoSelecionado = document.getElementById('selectVencimento').value;
 
-  if (!tituloSelecionado || !vencimentoSelecionado) return;
+  if (!tituloSelecionado || !vencimentoSelecionado) {
+    atualizarDetalhesTitulo([]);
+    return;
+  }
 
   // Filtra e ordena
   const dadosFiltrados = filtrarEOrdenarDados(todosOsDados, tituloSelecionado, vencimentoSelecionado);
   const series = extrairSeriesGrafico(dadosFiltrados);
+
+  // Atualiza a área de detalhes em destaque com o registro mais recente
+  atualizarDetalhesTitulo(dadosFiltrados);
 
   // Destrói gráfico anterior caso já exista
   if (meuGrafico) {
@@ -124,6 +130,43 @@ function atualizarGrafico() {
       })
     }
   });
+}
+
+/**
+ * Atualiza o painel de detalhes com os dados mais recentes do título selecionado.
+ * @param {Array<Object>} dadosFiltrados - Registros ordenados cronologicamente por Data Base.
+ */
+function atualizarDetalhesTitulo(dadosFiltrados) {
+  const elData = document.getElementById('detalheDataBase');
+  const elPuCompra = document.getElementById('detalhePuCompra');
+  const elPuVenda = document.getElementById('detalhePuVenda');
+  const elTaxaCompra = document.getElementById('detalheTaxaCompra');
+  const elTaxaVenda = document.getElementById('detalheTaxaVenda');
+
+  if (!elData || !elPuCompra || !elPuVenda || !elTaxaCompra || !elTaxaVenda) return;
+
+  if (!dadosFiltrados || dadosFiltrados.length === 0) {
+    elData.textContent = '-';
+    elPuCompra.textContent = '-';
+    elPuVenda.textContent = '-';
+    elTaxaCompra.textContent = '-';
+    elTaxaVenda.textContent = '-';
+    return;
+  }
+
+  // Como os dados foram ordenados cronologicamente, o último elemento é o mais recente
+  const ultimoRegistro = dadosFiltrados[dadosFiltrados.length - 1];
+
+  const puCompra = parseValorBR(ultimoRegistro['PU Compra Manha']);
+  const puVenda = parseValorBR(ultimoRegistro['PU Venda Manha']);
+  const taxaCompra = parseValorBR(ultimoRegistro['Taxa Compra Manha']);
+  const taxaVenda = parseValorBR(ultimoRegistro['Taxa Venda Manha']);
+
+  elData.textContent = ultimoRegistro['Data Base'] || '-';
+  elPuCompra.textContent = formatarMoedaBR(puCompra);
+  elPuVenda.textContent = formatarMoedaBR(puVenda);
+  elTaxaCompra.textContent = formatarTaxaBR(taxaCompra);
+  elTaxaVenda.textContent = formatarTaxaBR(taxaVenda);
 }
 
 // Inicializa quando o DOM estiver pronto

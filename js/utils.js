@@ -23,3 +23,23 @@ function parseDataBR(dataStr) {
   const partes = dataStr.split('/');
   return new Date(partes[2], partes[1] - 1, partes[0]);
 }
+
+/**
+ * Formata um valor numérico para moeda brasileira (R$ 1.234,56).
+ * @param {number|null} valor - Valor numérico.
+ * @returns {string} String formatada ou '-'.
+ */
+function formatarMoedaBR(valor) {
+  if (valor === null || valor === undefined || isNaN(valor)) return '-';
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+/**
+ * Formata um valor numérico para taxa percentual brasileira (12,50%).
+ * @param {number|null} valor - Valor numérico da taxa.
+ * @returns {string} String formatada com % ou '-'.
+ */
+function formatarTaxaBR(valor) {
+  if (valor === null || valor === undefined || isNaN(valor)) return '-';
+  return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+}
