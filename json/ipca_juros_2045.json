@@ -2,10 +2,10 @@
   "nome_original": "Tesouro IPCA+ com Juros Semestrais",
   "nome_padrao": "IPCA_JUROS_2045",
   "vencimento": "15/05/2045",
-  "data_base": "01/10/2026",
-  "taxa_compra_manha": "7,20",
-  "taxa_venda_manha": "7,32",
-  "pu_compra_manha": "4309,46",
-  "pu_venda_manha": "4256,07",
-  "pu_base_manha": "4256,07"
+  "data_base": "02/10/2026",
+  "taxa_compra_manha": "7,18",
+  "taxa_venda_manha": "7,30",
+  "pu_compra_manha": "4322,37",
+  "pu_venda_manha": "4266,74",
+  "pu_base_manha": "4266,74"
 }
