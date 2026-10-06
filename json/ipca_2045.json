@@ -2,10 +2,10 @@
   "nome_original": "Tesouro IPCA+",
   "nome_padrao": "IPCA_2045",
   "vencimento": "15/05/2045",
-  "data_base": "02/10/2026",
-  "taxa_compra_manha": "7,03",
-  "taxa_venda_manha": "7,15",
-  "pu_compra_manha": "1352,37",
-  "pu_venda_manha": "1323,32",
-  "pu_base_manha": "1323,32"
+  "data_base": "05/10/2026",
+  "taxa_compra_manha": "6,45",
+  "taxa_venda_manha": "6,57",
+  "pu_compra_manha": "1496,05",
+  "pu_venda_manha": "1464,49",
+  "pu_base_manha": "1464,49"
 }
