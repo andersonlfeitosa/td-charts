@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Educa+",
   "nome_padrao": "EDUCA_MAIS_2038",
   "vencimento": "15/12/2038",
-  "data_base": "07/10/2026",
-  "taxa_compra_manha": "6,93",
-  "taxa_venda_manha": "7,05",
-  "pu_compra_manha": "2499,84",
-  "pu_venda_manha": "2472,02",
-  "pu_base_manha": "2472,02"
+  "data_base": "08/10/2026",
+  "taxa_compra_manha": "6,84",
+  "taxa_venda_manha": "6,96",
+  "pu_compra_manha": "2521,23",
+  "pu_venda_manha": "2493,17",
+  "pu_base_manha": "2493,17"
 }
