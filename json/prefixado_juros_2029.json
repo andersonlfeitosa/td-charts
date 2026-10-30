@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Prefixado com Juros Semestrais",
   "nome_padrao": "PREFIXADO_JUROS_2029",
   "vencimento": "01/01/2029",
-  "data_base": "28/10/2026",
-  "taxa_compra_manha": "14,69",
-  "taxa_venda_manha": "14,81",
-  "pu_compra_manha": "953,78",
-  "pu_venda_manha": "951,35",
-  "pu_base_manha": "951,35"
+  "data_base": "29/10/2026",
+  "taxa_compra_manha": "14,67",
+  "taxa_venda_manha": "14,79",
+  "pu_compra_manha": "954,62",
+  "pu_venda_manha": "952,19",
+  "pu_base_manha": "952,19"
 }

@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Prefixado com Juros Semestrais",
   "nome_padrao": "PREFIXADO_JUROS_2035",
   "vencimento": "01/01/2035",
-  "data_base": "28/10/2026",
-  "taxa_compra_manha": "15,03",
-  "taxa_venda_manha": "15,15",
-  "pu_compra_manha": "812,98",
-  "pu_venda_manha": "808,12",
-  "pu_base_manha": "808,12"
+  "data_base": "29/10/2026",
+  "taxa_compra_manha": "15,15",
+  "taxa_venda_manha": "15,27",
+  "pu_compra_manha": "809,03",
+  "pu_venda_manha": "804,20",
+  "pu_base_manha": "804,20"
 }
