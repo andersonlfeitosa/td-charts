@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Selic",
   "nome_padrao": "SELIC_2027",
   "vencimento": "01/03/2027",
-  "data_base": "06/11/2026",
+  "data_base": "09/11/2026",
   "taxa_compra_manha": "0,02",
   "taxa_venda_manha": "0,03",
-  "pu_compra_manha": "20251,05",
-  "pu_venda_manha": "20240,05",
-  "pu_base_manha": "20240,05"
+  "pu_compra_manha": "20261,33",
+  "pu_venda_manha": "20250,35",
+  "pu_base_manha": "20250,35"
 }
