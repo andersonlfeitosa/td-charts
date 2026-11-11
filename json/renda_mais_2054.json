@@ -2,10 +2,10 @@
   "nome_original": "Tesouro Renda+ Aposentadoria Extra",
   "nome_padrao": "RENDA_MAIS_2054",
   "vencimento": "15/12/2054",
-  "data_base": "09/11/2026",
+  "data_base": "10/11/2026",
   "taxa_compra_manha": "7,45",
   "taxa_venda_manha": "7,57",
-  "pu_compra_manha": "1421,44",
-  "pu_venda_manha": "1396,22",
-  "pu_base_manha": "1396,22"
+  "pu_compra_manha": "1421,94",
+  "pu_venda_manha": "1396,71",
+  "pu_base_manha": "1396,71"
 }
