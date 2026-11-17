@@ -2,10 +2,10 @@
   "nome_original": "Tesouro IGPM+ com Juros Semestrais",
   "nome_padrao": "IGPM_2031",
   "vencimento": "01/01/2031",
-  "data_base": "13/11/2026",
-  "taxa_compra_manha": "7,64",
-  "taxa_venda_manha": "7,76",
-  "pu_compra_manha": "8094,27",
-  "pu_venda_manha": "8055,95",
-  "pu_base_manha": "8055,95"
+  "data_base": "16/11/2026",
+  "taxa_compra_manha": "7,63",
+  "taxa_venda_manha": "7,75",
+  "pu_compra_manha": "8101,21",
+  "pu_venda_manha": "8067,07",
+  "pu_base_manha": "8067,07"
 }
